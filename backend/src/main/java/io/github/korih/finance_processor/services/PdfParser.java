@@ -13,10 +13,17 @@ import io.github.korih.finance_processor.models.BankStatement;
 
 @Service
 public class PdfParser {
+
+    private final BankStatementService bankStatementService;
   private static final Pattern MONEY_PATTERN = Pattern.compile(
       "\\b(?:\\d{1,3}(?:,\\d{3})+|\\d+)(?:\\.\\d{2})\\b");
-  private static final String STUDENT_PATTERN = 
-          "[A-Z]{3} \\d{1,2}/\\d{2} - [A-Z]{3} \\d{1,2}/\\d{2}\\s*\\n";
+  private static final String STUDENT_PATTERN = "[A-Z]{3} \\d{1,2}/\\d{2} - [A-Z]{3} \\d{1,2}/\\d{2}\\s*\\n";
+
+
+    PdfParser(BankStatementService bankStatementService) {
+        this.bankStatementService = bankStatementService;
+    }
+
 
   public BankStatement extractBankStatement(MultipartFile file) {
     try (PDDocument document = PDDocument.load(file.getInputStream())) {
@@ -28,8 +35,9 @@ public class PdfParser {
       var deposits = changes[1];
       var range = getBankStatementRange(text);
 
-      var bankstatement = new BankStatement(initAmount, withdrawals, deposits, range, null);
+      var bankstatement = new BankStatement(initAmount, withdrawals, deposits, range);
 
+      bankStatementService.createBankStatement(bankstatement);
       return bankstatement;
     } catch (IOException e) {
       return null;
