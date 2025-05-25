@@ -5,14 +5,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.github.korih.finance_processor.models.BankStatement;
 import io.github.korih.finance_processor.models.BankStatements;
-import io.github.korih.finance_processor.services.BankStatementRepository;
 import io.github.korih.finance_processor.services.BankStatementService;
 import io.github.korih.finance_processor.services.PdfParser;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
