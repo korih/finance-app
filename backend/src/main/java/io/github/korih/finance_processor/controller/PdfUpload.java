@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import io.github.korih.finance_processor.models.BankStatements;
 import io.github.korih.finance_processor.services.BankStatementService;
-import io.github.korih.finance_processor.services.PdfParser;
+import io.github.korih.finance_processor.services.StatementParser;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,10 +21,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RestController
 @RequestMapping("api/extract")
 public class PdfUpload {
-  PdfParser parser;
+  StatementParser parser;
   BankStatementService bankStatementService;
 
-  public PdfUpload(PdfParser parser, BankStatementService bankStatementService) {
+  public PdfUpload(StatementParser parser, BankStatementService bankStatementService) {
     this.parser = parser;
     this.bankStatementService = bankStatementService;
   }

@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import io.github.korih.finance_processor.models.BankStatement;
 
 @Service
-public class PdfParser {
+public class StatementParser {
 
     private final BankStatementService bankStatementService;
   private static final Pattern MONEY_PATTERN = Pattern.compile(
@@ -20,7 +20,7 @@ public class PdfParser {
   private static final String STUDENT_PATTERN = "[A-Z]{3} \\d{1,2}/\\d{2} - [A-Z]{3} \\d{1,2}/\\d{2}\\s*\\n";
 
 
-    PdfParser(BankStatementService bankStatementService) {
+    StatementParser(BankStatementService bankStatementService) {
         this.bankStatementService = bankStatementService;
     }
 
