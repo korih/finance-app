@@ -1,15 +1,16 @@
+import { Routes, Route } from "react-router-dom";
 import "./App.css";
+import Home from "./pages/HomePage";
+import Login from "./pages/Login";
+import Landing from "./pages/Landing";
 
 function App() {
-
   return (
-    <main>
-      <section>
-        <h1>Finance App</h1>
-      </section>
-      <section className="bg-black">
-      </section>
-    </main>
+    <Routes>
+      <Route path="/Landing" element={<Landing />} />
+      <Route path="/Login" element={<Login />} />
+      <Route path="/home" element={<Home />} />
+    </Routes>
   );
 }
 
