@@ -19,28 +19,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 @RestController
-@RequestMapping("api/extract")
-public class PdfUpload {
+@RequestMapping("api/bankstatement")
+public class BankStatement {
   StatementParser parser;
   BankStatementService bankStatementService;
 
-  public PdfUpload(StatementParser parser, BankStatementService bankStatementService) {
+  public BankStatement(StatementParser parser, BankStatementService bankStatementService) {
     this.parser = parser;
     this.bankStatementService = bankStatementService;
   }
 
-  @PostMapping(value = "/bankstatement", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<?> extractBankStatementEntity(@RequestParam("file") MultipartFile file) {
     var statement = parser.extractBankStatement(file);
-    if (statement == null) {
-      return ResponseEntity.badRequest().build();
-    }
-    return ResponseEntity.ok(statement);
-  }
-
-  @PostMapping(value = "/creditstatement", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<?> extractCreditStatementEntity(@RequestParam("file") MultipartFile file) {
-    var statement = parser.extractCreditCardStatement(file);
     if (statement == null) {
       return ResponseEntity.badRequest().build();
     }

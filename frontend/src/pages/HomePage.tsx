@@ -3,10 +3,21 @@ import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { MetricsCard } from "@/components/metrics-card"
 import { StatsChart } from "@/components/stats-chart"
-import { VaultTable } from "@/components/vault-table"
 import { LayoutDashboard, Wallet } from "lucide-react"
+import { useEffect } from "react"
+import axios from "axios";
+import { BACKEND_URI } from "@/config"
 
 export default function HomePage() {
+  useEffect(() => {
+    // TODO: make useEffect call to check if verified
+    axios.get(`${BACKEND_URI}/auth/validate`).then(response => console.log(response));
+
+    // TODO: Make api call to get data from backend
+  })
+
+
+  // TODO: Make the data follow some sort of schema
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="grid lg:grid-cols-[280px_1fr]">
@@ -68,7 +79,7 @@ export default function HomePage() {
               change={{ value: "$1,340", percentage: "+13.2%", isPositive: true }}
             />
             <MetricsCard
-              title="YTD Balance"
+              title="Your Withdrawals"
               value="$20,892"
               change={{ value: "$1,340", percentage: "+1.2%", isPositive: true }}
             />
@@ -97,7 +108,7 @@ export default function HomePage() {
             <StatsChart />
           </Card>
           <div className="mt-6">
-            <VaultTable />
+            {/* <VaultTable /> */}
           </div>
         </main>
       </div>
