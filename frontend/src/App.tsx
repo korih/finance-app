@@ -7,7 +7,7 @@ import Landing from "./pages/Landing";
 function App() {
   return (
     <Routes>
-      <Route path="/Landing" element={<Landing />} />
+      <Route path="/" element={<Landing />} />
       <Route path="/Login" element={<Login />} />
       <Route path="/home" element={<Home />} />
     </Routes>
