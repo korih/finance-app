@@ -24,7 +24,6 @@ public class StatementParser {
         this.bankStatementService = bankStatementService;
     }
 
-
   public BankStatement extractBankStatement(MultipartFile file) {
     try (PDDocument document = PDDocument.load(file.getInputStream())) {
       PDFTextStripper stripper = new PDFTextStripper();
@@ -88,10 +87,4 @@ public class StatementParser {
     BigDecimal amount = new BigDecimal(processedString);
     return amount;
   }
-
-  public Object extractCreditCardStatement(MultipartFile file) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'extractCreditCardStatement'");
-  }
-
 }

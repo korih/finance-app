@@ -46,6 +46,7 @@ public class BankStatement {
   @DeleteMapping(value = "/deleteId/{id}")
   public ResponseEntity<Void> deleteBankStatementId(@PathVariable Long id) {
     boolean deleted = bankStatementService.deleteBankStatementId(id);
+    System.out.println(deleted);
     if (deleted) {
       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     } 
