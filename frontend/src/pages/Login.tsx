@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,10 +17,93 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Upload, TrendingUp, BarChart3, PieChart } from "lucide-react";
+import axios from "axios";
+import { BACKEND_URI } from "@/config";
+import { useNavigate } from "react-router-dom";
+import type { User } from "@/models/User";
 
 export default function Login() {
   const [isSignInOpen, setIsSignInOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const nav = useNavigate();
+  axios.defaults.withCredentials = true;
+
+  // If user is already authenticated then we can just redirect to home page
+  useEffect(() => {
+    // axios.get(`${BACKEND_URI}/auth/validate`).then((response) => {
+    //   if (response.status == 200) {
+    //     nav("/home");
+    //   } 
+    // });
+  }, []);
+
+  const handleSignInModal = () => {
+    setIsSignInOpen(isSignInOpen => !isSignInOpen);
+    setEmail("");
+    setPassword("");
+  }
+
+  const handleRegisterModal = () => {
+    setIsRegisterOpen(isRegisterOpen => !isRegisterOpen);
+    setEmail("");
+    setPassword("");
+  }
+
+  const validateCreds = (email: string, password: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    return password.length > 8 && emailRegex.test(email);
+  }
+
+  const handleRegisterCall = () => {
+    if (validateCreds(email, password)) {
+      const user: User = {
+        email: email,
+        password: password
+      }
+
+      axios.post("/auth/register", user)
+        .then((response) => {
+          if (response.status == 200) {
+            nav("/home")
+          } else {
+            alert("Client Error");
+          }
+        })
+        .catch(() => {
+          alert("User already exists")
+        });
+
+    } else {
+      alert("Please user a correct email and password > 8 characters")
+    }
+  }
+
+  const handleSignInCall = () => {
+    if (validateCreds(email, password)) {
+      const user: User = {
+        email: email,
+        password: password
+      }
+
+      axios.post("/auth/login", user)
+        .then((response) => {
+          if (response.status == 200) {
+            nav("/home")
+          } else {
+            alert("Client Error");
+          }
+        })
+        .catch(() => {
+          alert("User not found")
+        });
+
+    } else {
+      alert("Please user a correct email and password > 8 characters")
+    }
+  }
 
   return (
     <div className="bg-black w-screen m-0 p-0 overflow-x-hidden">
@@ -37,7 +120,7 @@ export default function Login() {
               </h1>
             </div>
             <div className="flex space-x-3">
-              <Dialog open={isSignInOpen} onOpenChange={setIsSignInOpen}>
+              <Dialog open={isSignInOpen} onOpenChange={handleSignInModal}>
                 <DialogTrigger asChild>
                   <Button
                     variant="outline"
@@ -63,6 +146,7 @@ export default function Login() {
                         type="email"
                         placeholder="your@email.com"
                         className="bg-black border-white text-white placeholder:text-gray-400 focus:border-green-500"
+                        onChange={(e) => setEmail(e.target.value)}
                       />
                     </div>
                     <div className="space-y-2">
@@ -73,9 +157,13 @@ export default function Login() {
                         id="signin-password"
                         type="password"
                         className="bg-black border-white text-white focus:border-green-500"
+                        onChange={(e) => setPassword(e.target.value)}
                       />
                     </div>
-                    <Button className="w-full bg-green-500 hover:bg-green-600 text-black font-semibold">
+                    <Button 
+                    className="w-full bg-green-500 hover:bg-green-600 text-black font-semibold"
+                    onClick={handleSignInCall}
+                    >
                       Sign In
                     </Button>
                     <div className="text-center">
@@ -93,7 +181,7 @@ export default function Login() {
                 </DialogContent>
               </Dialog>
 
-              <Dialog open={isRegisterOpen} onOpenChange={setIsRegisterOpen}>
+              <Dialog open={isRegisterOpen} onOpenChange={handleRegisterModal}>
                 <DialogTrigger asChild>
                   <Button className="bg-green-500 hover:bg-green-600 font-semibold text-white">
                     Register
@@ -109,8 +197,7 @@ export default function Login() {
                     </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                    </div>
+                    <div className="grid grid-cols-2 gap-4"></div>
                     <div className="space-y-2">
                       <Label htmlFor="register-email" className="text-white">
                         Email
@@ -132,7 +219,10 @@ export default function Login() {
                         className="bg-black border-white text-white focus:border-green-500"
                       />
                     </div>
-                    <Button className="w-full bg-green-500 hover:bg-green-600 text-black font-semibold">
+                    <Button 
+                    className="w-full bg-green-500 hover:bg-green-600 text-black font-semibold"
+                    onClick={handleRegisterCall}
+                    >
                       Create Account
                     </Button>
                     <div className="text-center">

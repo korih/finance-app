@@ -1,21 +1,103 @@
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { MetricsCard } from "@/components/metrics-card"
-import { StatsChart } from "@/components/stats-chart"
-import { LayoutDashboard, Wallet } from "lucide-react"
-import { useEffect } from "react"
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { MetricsCard } from "@/components/metrics-card";
+import { StatsChart } from "@/components/stats-chart";
+import { LayoutDashboard, Wallet } from "lucide-react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { BACKEND_URI } from "@/config"
+import { BACKEND_URI } from "@/config";
+import { useNavigate } from "react-router-dom";
+import {
+  bankStatementsSchema,
+  type BankStatement,
+  type BankStatements,
+} from "@/schemas/BankStatement.schema";
 
 export default function HomePage() {
+  const nav = useNavigate();
+  const [bankStatements, setBankStatements] = useState<BankStatement[]>([]);
+  const [balance, setBalance] = useState(0);
+  const [balanceDif, setBalanceDif] = useState(0);
+  const [deposit, setDeposit] = useState(0);
+  const [withdrawals, setWithdrawal] = useState(0)
+  const MONTHS: Record<string, number> = {
+    JAN: 0,
+    FEB: 1,
+    MAR: 2,
+    APR: 3,
+    MAY: 4,
+    JUN: 5,
+    JUL: 6,
+    AUG: 7,
+    SEP: 8,
+    OCT: 9,
+    NOV: 10,
+    DEC: 11,
+  };
+
   useEffect(() => {
-    // TODO: make useEffect call to check if verified
-    axios.get(`${BACKEND_URI}/auth/validate`).then(response => console.log(response));
+    const startupSequence = async () => {
+      // await axios
+      //   .get(`${BACKEND_URI}/auth/validate`)
+      //   .then((response) => console.log(response))
+      //   .catch(() => nav("/"));
 
-    // TODO: Make api call to get data from backend
-  })
+      return await axios
+        .get(`${BACKEND_URI}/bankstatement/statements`)
+        .then((response) => {
+          if (response.status == 200) {
+            return bankStatementsSchema.parse(response.data.bankStatements);
+          } else {
+            return null;
+          }
+        })
+        .catch((error) => console.log(error));
+    };
+    startupSequence().then((response) => {
+      if (response) {
+        const sortedStatements = [... response].sort((a, b) => {
+          const dataA = parseStatementRange(a.statementRange)?.getTime() || 0;
+          const dataB = parseStatementRange(b.statementRange)?.getTime() || 0;
+          return dataB - dataA;
+        })
+        
+        if (sortedStatements.length > 0) {
+          setBalance(sortedStatements[sortedStatements.length - 1].finalAmount)
+        } 
 
+        if (sortedStatements.length > 0) {
+          const statement = sortedStatements[sortedStatements.length - 1];
+          setBalanceDif(statement.finalAmount - statement.initialAmount);
+          setWithdrawal(statement.withdrawals);
+          setDeposit(statement.deposits);
+        } 
+
+        setBankStatements(sortedStatements);
+      }
+    });
+  }, []);
+
+  const parseStatementRange = (range: string) => {
+    const match = range.match(/-\s([A-Z]{3}) (\d{2})\/(\d{2})$/)
+    if (!match) return null;
+
+    const [, monthStr, dayStr, yearStr] = match;
+    const month = MONTHS[monthStr];
+    const day = parseInt(dayStr);
+    const year = 2000 + parseInt(yearStr, 10);
+
+    return new Date(year, month, day);
+  }
+
+  const findNetChanges = (statements: BankStatements) => {
+    const deposits: number[] = []
+    const withdrawals: number[] = []
+
+    statements.forEach((state) => {
+      const deposit = state.deposits
+    })
+  }
 
   // TODO: Make the data follow some sort of schema
   return (
@@ -70,23 +152,37 @@ export default function HomePage() {
           <div className="grid gap-4 md:grid-cols-3">
             <MetricsCard
               title="Your Balance"
-              value="$74,892"
-              change={{ value: "$1,340", percentage: "-2.1%", isPositive: false }}
+              value={`$${balance.toLocaleString()}`}
+              change={{
+                value: balanceDif > 0 ? `+${balanceDif.toLocaleString()}` : `-${balanceDif.toLocaleString()}`,
+                percentage: `${((balanceDif / balance) * 100).toFixed(2)}%`,
+                isPositive: balanceDif > 0,
+              }}
             />
             <MetricsCard
-              title="Your Deposits"
-              value="$54,892"
-              change={{ value: "$1,340", percentage: "+13.2%", isPositive: true }}
+              title="Your Net Deposits"
+              value={`$${deposit.toLocaleString()}`}
+              change={{
+                value: "",
+                percentage: "",
+                isPositive: true,
+              }}
             />
             <MetricsCard
-              title="Your Withdrawals"
-              value="$20,892"
-              change={{ value: "$1,340", percentage: "+1.2%", isPositive: true }}
+              title="Your Net Withdrawals"
+              value={`$${withdrawals.toLocaleString()}`}
+              change={{
+                value: "",
+                percentage: "",
+                isPositive: true,
+              }}
             />
           </div>
           <Card className="mt-6 p-6 bg-black">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-white">General Statistics</h2>
+              <h2 className="text-lg font-semibold text-white">
+                General Statistics
+              </h2>
               <div className="flex gap-2">
                 <Button size="sm" variant="ghost">
                   <p className="text-white">Today</p>
@@ -105,13 +201,13 @@ export default function HomePage() {
                 </Button>
               </div>
             </div>
-            <StatsChart />
+            <div className="outline-solid border rounded-4xl outline-accent/50">
+              <StatsChart />
+            </div>
           </Card>
-          <div className="mt-6">
-            {/* <VaultTable /> */}
-          </div>
+          <div className="mt-6">{/* <VaultTable /> */}</div>
         </main>
       </div>
     </div>
-  )
+  );
 }
