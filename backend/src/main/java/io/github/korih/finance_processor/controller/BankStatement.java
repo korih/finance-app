@@ -30,7 +30,10 @@ public class BankStatement {
   private final JwtService jwtService;
 
   @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<?> extractBankStatementEntity(@RequestParam("file") MultipartFile file) {
+  public ResponseEntity<?> extractBankStatementEntity(
+    @CookieValue(value = "", required = true) String cookie,
+    @RequestParam("file") MultipartFile file
+    ) {
     var statement = parser.extractBankStatement(file);
     if (statement == null) {
       return ResponseEntity.badRequest().build();
@@ -49,9 +52,11 @@ public class BankStatement {
   }
 
   @DeleteMapping(value = "/deleteId/{id}")
-  public ResponseEntity<Void> deleteBankStatementId(@PathVariable Long id) {
+  public ResponseEntity<Void> deleteBankStatementId(
+    @CookieValue(value = "authToken", required = true) String cookie,
+    @PathVariable Long id
+    ) {
     boolean deleted = bankStatementService.deleteBankStatementId(id);
-    System.out.println(deleted);
     if (deleted) {
       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     } 

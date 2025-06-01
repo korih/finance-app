@@ -6,9 +6,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import io.github.korih.finance_processor.models.User;
-import io.github.korih.finance_processor.models.UserRepository;
-import io.github.korih.finance_processor.models.dtos.LoginDto;
-import io.github.korih.finance_processor.models.dtos.RegisterClassDto;
+import io.github.korih.finance_processor.models.auth.LoginDto;
+import io.github.korih.finance_processor.models.auth.RegisterClassDto;
+import io.github.korih.finance_processor.models.repositories.UserRepository;
 
 @Service
 public class AuthenticationService {

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.github.korih.finance_processor.models.BankStatement;
+import io.github.korih.finance_processor.models.repositories.BankStatementRepository;
 
 @Service
 public class BankStatementService {

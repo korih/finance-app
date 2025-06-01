@@ -1,4 +1,4 @@
-package io.github.korih.finance_processor.services;
+package io.github.korih.finance_processor.models.repositories;
 
 import org.springframework.data.repository.CrudRepository;
 

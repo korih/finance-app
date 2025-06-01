@@ -1,4 +1,4 @@
-package io.github.korih.finance_processor.models.dtos;
+package io.github.korih.finance_processor.models.auth;
 
 import lombok.Data;
 

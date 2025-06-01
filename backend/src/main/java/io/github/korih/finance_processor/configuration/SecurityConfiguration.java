@@ -14,7 +14,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import io.github.korih.finance_processor.services.JwtAuthenticationFilter;
+import io.github.korih.finance_processor.controller.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
