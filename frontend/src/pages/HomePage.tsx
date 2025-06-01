@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -7,7 +6,7 @@ import { StatsChart } from "@/components/stats-chart";
 import { LayoutDashboard, Wallet } from "lucide-react";
 import { useEffect, useState } from "react";
 import { axiosClient, BACKEND_URI } from "@/config";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   bankStatementsSchema,
   type BankStatement,
@@ -15,7 +14,7 @@ import {
 } from "@/schemas/BankStatement.schema";
 
 export default function HomePage() {
-  // const nav = useNavigate();
+  const nav = useNavigate();
   const [bankStatements, setBankStatements] = useState<BankStatement[]>([]);
   const [balance, setBalance] = useState<number>(0);
   const [balanceDif, setBalanceDif] = useState<number>(0);
@@ -40,12 +39,10 @@ export default function HomePage() {
 
   useEffect(() => {
     const startupSequence = async () => {
-      // await axiosClient
-      //   .get(`${BACKEND_URI}/auth/login`)
-      //   .then((response) => console.log(response))
-      //   .catch(() => nav("/"));
-      const b = bankStatements;
-      console.log(b);
+      await axiosClient
+        .get(`${BACKEND_URI}/auth/login`)
+        .then((response) => console.log(response))
+        .catch(() => nav("/"));
 
       return await axiosClient 
         .get(`${BACKEND_URI}/bankstatement/statements`)
@@ -81,6 +78,7 @@ export default function HomePage() {
 
         setGraphData(data);
         setBankStatements(sortedStatements);
+        console.log(bankStatements)
       }
     });
   }, []);

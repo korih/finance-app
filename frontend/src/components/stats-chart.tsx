@@ -26,7 +26,6 @@ type graphProps = {
   data: graphProp[] 
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function StatsChart({ data } : graphProps) {
   return (
     <div className="h-[300px] w-full">
