@@ -7,7 +7,7 @@ import { StatsChart } from "@/components/stats-chart";
 import { LayoutDashboard, Wallet } from "lucide-react";
 import { useEffect, useState } from "react";
 import { axiosClient, BACKEND_URI } from "@/config";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import {
   bankStatementsSchema,
   type BankStatement,
@@ -15,7 +15,7 @@ import {
 } from "@/schemas/BankStatement.schema";
 
 export default function HomePage() {
-  const nav = useNavigate();
+  // const nav = useNavigate();
   const [bankStatements, setBankStatements] = useState<BankStatement[]>([]);
   const [balance, setBalance] = useState<number>(0);
   const [balanceDif, setBalanceDif] = useState<number>(0);
@@ -44,6 +44,8 @@ export default function HomePage() {
       //   .get(`${BACKEND_URI}/auth/login`)
       //   .then((response) => console.log(response))
       //   .catch(() => nav("/"));
+      const b = bankStatements;
+      console.log(b);
 
       return await axiosClient 
         .get(`${BACKEND_URI}/bankstatement/statements`)
