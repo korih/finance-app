@@ -2,7 +2,6 @@ package io.github.korih.finance_processor.models;
 
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

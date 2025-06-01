@@ -11,51 +11,53 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import io.github.korih.finance_processor.services.JwtAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfiguration {
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
   private final AuthenticationProvider authenticationProvider;
 
-  public SecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter, AuthenticationProvider authenticationProvider) {
-    this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-    this.authenticationProvider = authenticationProvider;
-  }
-
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-    httpSecurity.csrf()
-    .disable()
-    .authorizeHttpRequests()
-    .requestMatchers("/api/auth/**")
-    .permitAll()
-    .anyRequest()
-    .authenticated()
-    .and()
-    .sessionManagement()
-    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-    .and()
-    .authenticationProvider(authenticationProvider)
-    .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+    httpSecurity
+        .cors()
+        .and()
+        .csrf()
+        .ignoringRequestMatchers("/api/auth/**")
+        .and()
+        .authorizeHttpRequests()
+        .requestMatchers("/api/auth/**")
+        .permitAll()
+        .anyRequest()
+        .authenticated()
+        .and()
+        .sessionManagement()
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and()
+        .authenticationProvider(authenticationProvider)
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
     return httpSecurity.build();
   }
 
   @Bean
-  CorsConfiguration corsConfiguration() {
+  CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-
+    configuration.setAllowedOrigins(List.of("http://localhost:8005","http://localhost:5173")); // Frontend origin
+    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-    configuration.setAllowedMethods(List.of("GET", "POST"));
-    configuration.setAllowedOrigins(List.of("http://localhost:8005"));
+    configuration.setAllowCredentials(true); // Required if you're using cookies
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
-
-    return configuration;
+    return source;
   }
+
 }

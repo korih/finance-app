@@ -1,6 +1,9 @@
 package io.github.korih.finance_processor.controller;
 
+import org.apache.tomcat.util.http.SameSiteCookies;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,11 +37,21 @@ public class Authentication {
         User user = authenticationService.authenticate(entity);
         String token = jwtService.generateToken(user);
 
+        ResponseCookie cookie = ResponseCookie.from("authToken", token)
+        .httpOnly(false)
+        .secure(false)
+        .path("/")
+        .maxAge(900)
+        .sameSite(SameSiteCookies.LAX.toString())
+        .build();
+
         LoginResponse response = new LoginResponse();
         response.setToken(token);
         response.setExpiration(jwtService.getExpiration());
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok()
+        .header(HttpHeaders.SET_COOKIE, cookie.toString())
+        .body(response);
     }
 
 }

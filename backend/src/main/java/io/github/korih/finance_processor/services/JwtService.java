@@ -4,7 +4,6 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Base64.Decoder;
 import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -52,6 +51,10 @@ public class JwtService {
     return (userName.equals(userDetails.getUsername())) && !isTokenExpired(token);
   }
 
+  public boolean isTokenValid(String token) {
+    return !isTokenExpired(token);
+  }
+
   private boolean isTokenExpired(String token) {
     return extractExpiration(token).before(new Date());
   }
@@ -77,7 +80,7 @@ public class JwtService {
 
   private Claims extractAllClaim(String token) {
     return Jwts
-    .parser()
+    .parserBuilder()
     .setSigningKey(getSignInKey())
     .build()
     .parseClaimsJws(token)

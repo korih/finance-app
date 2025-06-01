@@ -6,7 +6,7 @@ import { StatsChart } from "@/components/stats-chart";
 import { LayoutDashboard, Wallet } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { BACKEND_URI } from "@/config";
+import { axiosClient, BACKEND_URI } from "@/config";
 import { useNavigate } from "react-router-dom";
 import {
   bankStatementsSchema,
@@ -17,10 +17,12 @@ import {
 export default function HomePage() {
   const nav = useNavigate();
   const [bankStatements, setBankStatements] = useState<BankStatement[]>([]);
-  const [balance, setBalance] = useState(0);
-  const [balanceDif, setBalanceDif] = useState(0);
-  const [deposit, setDeposit] = useState(0);
-  const [withdrawals, setWithdrawal] = useState(0)
+  const [balance, setBalance] = useState<number>(0);
+  const [balanceDif, setBalanceDif] = useState<number>(0);
+  const [deposit, setDeposit] = useState<number>(0);
+  const [withdrawals, setWithdrawal] = useState<number>(0);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [graphData, setGraphData] = useState<any[]>([]);
   const MONTHS: Record<string, number> = {
     JAN: 0,
     FEB: 1,
@@ -38,12 +40,12 @@ export default function HomePage() {
 
   useEffect(() => {
     const startupSequence = async () => {
-      // await axios
-      //   .get(`${BACKEND_URI}/auth/validate`)
+      // await axiosClient
+      //   .get(`${BACKEND_URI}/auth/login`)
       //   .then((response) => console.log(response))
       //   .catch(() => nav("/"));
 
-      return await axios
+      return await axiosClient 
         .get(`${BACKEND_URI}/bankstatement/statements`)
         .then((response) => {
           if (response.status == 200) {
@@ -59,7 +61,7 @@ export default function HomePage() {
         const sortedStatements = [... response].sort((a, b) => {
           const dataA = parseStatementRange(a.statementRange)?.getTime() || 0;
           const dataB = parseStatementRange(b.statementRange)?.getTime() || 0;
-          return dataB - dataA;
+          return dataA - dataB;
         })
         
         if (sortedStatements.length > 0) {
@@ -73,6 +75,9 @@ export default function HomePage() {
           setDeposit(statement.deposits);
         } 
 
+        const data = findNetChanges(sortedStatements);
+
+        setGraphData(data);
         setBankStatements(sortedStatements);
       }
     });
@@ -91,12 +96,19 @@ export default function HomePage() {
   }
 
   const findNetChanges = (statements: BankStatements) => {
-    const deposits: number[] = []
-    const withdrawals: number[] = []
+    const data: { date: string; value: number; }[] = []
 
     statements.forEach((state) => {
-      const deposit = state.deposits
+      const finalAmount = state.finalAmount;
+      const month = state.statementRange;
+      const element = {
+        date: month,
+        value: finalAmount
+      }
+      data.push(element)
     })
+
+    return data;
   }
 
   // TODO: Make the data follow some sort of schema
@@ -202,7 +214,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="outline-solid border rounded-4xl outline-accent/50">
-              <StatsChart />
+              <StatsChart data={graphData} />
             </div>
           </Card>
           <div className="mt-6">{/* <VaultTable /> */}</div>

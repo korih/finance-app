@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Upload, TrendingUp, BarChart3, PieChart } from "lucide-react";
 import axios from "axios";
-import { BACKEND_URI } from "@/config";
+import { axiosClient, BACKEND_URI } from "@/config";
 import { useNavigate } from "react-router-dom";
 import type { User } from "@/models/User";
 
@@ -88,7 +88,7 @@ export default function Login() {
         password: password
       }
 
-      axios.post("/auth/login", user)
+      axiosClient.post(BACKEND_URI + "/auth/signIn", user)
         .then((response) => {
           if (response.status == 200) {
             nav("/home")
@@ -97,6 +97,7 @@ export default function Login() {
           }
         })
         .catch(() => {
+          console.log(BACKEND_URI + "/auth/signIn")
           alert("User not found")
         });
 
