@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -5,7 +6,6 @@ import { MetricsCard } from "@/components/metrics-card";
 import { StatsChart } from "@/components/stats-chart";
 import { LayoutDashboard, Wallet } from "lucide-react";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { axiosClient, BACKEND_URI } from "@/config";
 import { useNavigate } from "react-router-dom";
 import {
