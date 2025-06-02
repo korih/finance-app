@@ -1,9 +1,13 @@
-name: Build and Push Backend Docker Image
+name: Build and Push Docker Image
 
 on:
   push:
-    branches: [main]  # Change to your deployment branch
-
+    branches: [main] 
+    
+permissions:
+  contents: read
+  packages: write
+      
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
