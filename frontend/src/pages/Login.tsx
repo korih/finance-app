@@ -92,14 +92,16 @@ export default function Login() {
 
       axiosClient.post(BACKEND_URI + "/auth/signIn", user)
         .then((response) => {
+          console.log(response);
           if (response.status == 200) {
             nav("/home")
           } else {
             alert("Client Error");
           }
         })
-        .catch(() => {
+        .catch((e) => {
           console.log(BACKEND_URI + "/auth/signIn")
+          console.log(e)
           alert("User not found")
         });
 
