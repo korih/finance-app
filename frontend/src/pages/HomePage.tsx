@@ -40,7 +40,7 @@ export default function HomePage() {
   useEffect(() => {
     const startupSequence = async () => {
       await axiosClient
-        .get(`${BACKEND_URI}/auth/login`)
+        .get(`${BACKEND_URI}/auth/signIn`)
         .then((response) => console.log(response))
         .catch(() => nav("/"));
 
