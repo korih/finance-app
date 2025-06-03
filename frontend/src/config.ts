@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const BACKEND_URI = (() => {
-  const uri = "https://finance-app-api.korih.com";
+  const uri = "https://finance-app-api.korih.com/api";
   if (!uri) throw new Error("Missing VITE_BACKEND_URI in environment.");
   return uri;
 })();
