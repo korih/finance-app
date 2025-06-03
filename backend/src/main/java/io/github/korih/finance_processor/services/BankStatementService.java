@@ -27,7 +27,7 @@ public class BankStatementService {
     return bankStatementRepository.findByOwnerId(id);
   }
 
-  public boolean deleteBankStatementId(Long id) {
+  public boolean deleteBankStatementId(UUID id) {
     bankStatementRepository.deleteById(id);
     if (bankStatementRepository.existsById(id)) {
       return false;

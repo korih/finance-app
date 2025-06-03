@@ -6,7 +6,7 @@ import io.github.korih.finance_processor.models.BankStatement;
 import java.util.List;
 import java.util.UUID;
 
-public interface BankStatementRepository extends CrudRepository<BankStatement, Long> {
+public interface BankStatementRepository extends CrudRepository<BankStatement, UUID> {
 
   List<BankStatement> findByVersion(String version);
 

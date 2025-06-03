@@ -64,7 +64,7 @@ public class BankStatement {
   @DeleteMapping(value = "/deleteId/{id}")
   public ResponseEntity<Void> deleteBankStatementId(
       @CookieValue(value = "authToken", required = true) String cookie,
-      @PathVariable Long id) {
+      @PathVariable UUID id) {
     parseCookieSession(cookie);
     boolean deleted = bankStatementService.deleteBankStatementId(id);
     if (deleted) {

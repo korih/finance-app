@@ -50,7 +50,8 @@ public class SecurityConfiguration {
   @Bean
   CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(List.of("http://localhost:8005","http://localhost:5173")); // Frontend origin
+    configuration.setAllowedOrigins(
+        List.of("http://localhost:8005", "http://localhost:5173", "https://finance-app.korihuen.workers.dev"));
     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
     configuration.setAllowCredentials(true); // Required if you're using cookies
