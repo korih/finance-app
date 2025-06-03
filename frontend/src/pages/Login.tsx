@@ -90,7 +90,8 @@ export default function Login() {
         password: password
       }
 
-      axiosClient.post(BACKEND_URI + "/auth/signIn", user)
+      console.log(user);
+      axiosClient.post("https://finance-app-api.korih.com/api/auth/signIn", user)
         .then((response) => {
           console.log(response);
           if (response.status == 200) {
