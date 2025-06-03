@@ -72,7 +72,8 @@ export default function Login() {
             alert("Client Error");
           }
         })
-        .catch(() => {
+        .catch((e) => {
+          console.log(e);
           alert("User already exists")
         });
 
