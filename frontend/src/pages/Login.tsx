@@ -66,6 +66,7 @@ export default function Login() {
 
       axios.post("/auth/register", user)
         .then((response) => {
+          console.log(response);
           if (response.status == 200) {
             nav("/home")
           } else {
