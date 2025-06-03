@@ -54,7 +54,7 @@ export default function Login() {
   const validateCreds = (email: string, password: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    return password.length > 8 && emailRegex.test(email);
+    return password.length >= 8 && emailRegex.test(email);
   }
 
   const handleRegisterCall = () => {
