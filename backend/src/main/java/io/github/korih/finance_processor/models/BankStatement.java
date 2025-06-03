@@ -3,43 +3,47 @@ package io.github.korih.finance_processor.models;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "bank_statements")
+@NoArgsConstructor
 public class BankStatement {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private long id;
+  private UUID id;
 
   @Column(nullable = false)
-  private long ownerId;
+  private UUID ownerId;
 
   @Column(nullable = false)
   private String statementRange;
 
-  private String date;
+  private Date date;
   private String version;
   private BigDecimal initialAmount;
   private BigDecimal withdrawals;
   private BigDecimal deposits;
   private BigDecimal finalAmount;
 
-  protected BankStatement() {}
-
-  public BankStatement(BigDecimal startingAmount, BigDecimal withdrawals, BigDecimal deposits, String range) {
-    LocalDate date = LocalDate.now();
-    this.date = date.format(DateTimeFormatter.ofPattern("yyyy-MM"));
+  public BankStatement(UUID ownerId, BigDecimal startingAmount, BigDecimal withdrawals, BigDecimal deposits, String range) {
+    id = UUID.randomUUID();
+    this.date = new Date();
     this.version = "v1";
     this.initialAmount = startingAmount;
     this.withdrawals = withdrawals;
     this.deposits = deposits;
     this.statementRange = range;
+    this.ownerId = ownerId;
 
     this.finalAmount = calculateEndingAmount(startingAmount, withdrawals, deposits);
   }
@@ -54,11 +58,11 @@ public class BankStatement {
     return startingAmount.add(deposits).subtract(withdrawals);
   }
 
-  public long getId() {
+  public UUID getId() {
     return id;
   }
 
-  public String getDate() {
+  public Date getDate() {
     return date;
   }
 

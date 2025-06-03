@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.github.korih.finance_processor.models.BankStatement;
+import io.github.korih.finance_processor.models.User;
 
 @Service
 public class StatementParser {
@@ -24,7 +25,7 @@ public class StatementParser {
         this.bankStatementService = bankStatementService;
     }
 
-  public BankStatement extractBankStatement(MultipartFile file) {
+  public BankStatement extractBankStatement(User user, MultipartFile file) {
     try (PDDocument document = PDDocument.load(file.getInputStream())) {
       PDFTextStripper stripper = new PDFTextStripper();
       String text = stripper.getText(document);
@@ -34,10 +35,12 @@ public class StatementParser {
       var deposits = changes[1];
       var range = getBankStatementRange(text);
 
-      var bankstatement = new BankStatement(initAmount, withdrawals, deposits, range);
+      var ownerId = user.getId();
+      var bankstatement = new BankStatement(ownerId, initAmount, withdrawals, deposits, range);
 
       bankStatementService.createBankStatement(bankstatement);
       return bankstatement;
+
     } catch (IOException e) {
       return null;
     }
