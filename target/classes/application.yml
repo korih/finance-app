@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: finance-app
+
+reddit:
+  api:
+    client-id: ${reddit.api.client-id} 
+    client-secret: ${reddit.api.client-secret} 
+    user-agent: sentiment-analysis-app
