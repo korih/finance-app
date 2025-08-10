@@ -6,5 +6,5 @@ import lombok.Data;
 public class ApiResponse<T> {
   private T data;
   private int statusCode;
-  private String message;
+  private ApiMessageEnum message;
 }

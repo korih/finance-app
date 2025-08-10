@@ -1,25 +1,47 @@
 package com.korih.finance_app.services;
 
 import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.concurrent.Executors;
 
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.korih.finance_app.models.ApiMessageEnum;
 import com.korih.finance_app.models.ApiResponse;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
 public class WebClient {
-  private final HttpClient httpClient;
+  private final HttpClient httpClient = HttpClient.newHttpClient();
+  private final ObjectMapper objectMapper = new ObjectMapper();
 
-  public <T> ApiResponse<T> getAsync(String url, Class<T> responseType) {
-    // Implementation for asynchronous GET request
-    // This is a placeholder; actual implementation would involve using httpClient to make the request
-    ApiResponse<T> response = new ApiResponse<>();
-    response.setData(null); // Replace with actual data from the response
-    response.setStatusCode(200); // Replace with actual status code
-    response.setMessage("Success"); // Replace with actual message
-    return response;
+  /**
+   * Sends a GET request to the given URL, deserializes the JSON response into the
+   * given responseType,
+   * and wraps it in an ApiResponse. The blocking HTTP call is run on a virtual
+   * thread.
+   */
+  public <T> ApiResponse<T> request(HttpRequest request, Class<T> responseType) {
+    ApiResponse<T> apiResponse = new ApiResponse<>();
+    try {
+      Executors.newVirtualThreadPerTaskExecutor().submit(() -> {
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        apiResponse.setStatusCode(response.statusCode());
+        if (response.statusCode() >= 200 && response.statusCode() < 300) {
+          T body = objectMapper.readValue(response.body(), responseType);
+          apiResponse.setData(body);
+          apiResponse.setMessage(ApiMessageEnum.SUCCESS);
+        } else {
+          apiResponse.setMessage(ApiMessageEnum.ERROR);
+        }
+        return apiResponse;
+      }).get();
+
+    } catch (Exception e) {
+      apiResponse.setStatusCode(500);
+      apiResponse.setMessage(ApiMessageEnum.INTERNAL_SERVER_ERROR);
+    }
+    return apiResponse;
   }
 }

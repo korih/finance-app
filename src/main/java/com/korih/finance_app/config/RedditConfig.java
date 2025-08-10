@@ -12,4 +12,5 @@ public class RedditConfig {
   private String clientId;
   private String clientSecret;
   private String userAgent;
+  private String redirectUri;
 }
