@@ -3,6 +3,8 @@ spring:
     name: finance-app
   datasource:
     url: ${DATABASE_URL} 
+    hikari:
+      leak-detection-threshold: 2000 # ms
   jpa:
     hibernate:
       ddl-auto: update
