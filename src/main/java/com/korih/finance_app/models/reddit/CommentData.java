@@ -30,6 +30,9 @@ public class CommentData {
   @JsonProperty("body")
   private String body;
 
+  @JsonProperty("parent_id")
+  private String parentId;
+
   @JsonProperty("created_utc")
   private String createdUtc;
 

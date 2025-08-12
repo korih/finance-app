@@ -13,7 +13,7 @@ public class Scheduler {
   // Api's
   private final RedditApiScanner redditApi;
 
-  @Scheduled(fixedRate = 600000) // Runs every 600 seconds
+  @Scheduled(fixedRate = 6000000) // Runs every 6000 seconds
   public void runApiTasks() {
     redditApi.execute();
   }

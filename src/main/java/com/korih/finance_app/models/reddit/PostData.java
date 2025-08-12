@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
-import jakarta.persistence.Id;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,12 +17,14 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PostData {
 
-  @Id
   @JsonProperty("id")
   private String id;
 
   @JsonProperty("title")
   private String title;
+
+  @JsonProperty("permalink")
+  private String permalink;
 
   @Nullable
   @Column(columnDefinition = "TEXT")

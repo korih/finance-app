@@ -24,6 +24,8 @@ public class PostEntity {
 
   private String title;
 
+  private String permalink;
+
   @Column(columnDefinition = "TEXT")
   private String selftext;
 
