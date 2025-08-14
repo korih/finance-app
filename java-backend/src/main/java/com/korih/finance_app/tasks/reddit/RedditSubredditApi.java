@@ -1,4 +1,4 @@
-package com.korih.finance_app.tasks.api;
+package com.korih.finance_app.tasks.reddit;
 
 import java.net.URI;
 import java.net.http.HttpRequest;
@@ -26,7 +26,7 @@ import com.korih.finance_app.services.WebClient;
 
 @Service
 @RequiredArgsConstructor
-public class RedditApiScanner extends AbstractApi {
+public class RedditSubredditApi {
     private final RedditConfig redditConfig;
     private final WebClient webClient;
     private final ObjectMapper objectMapper;
@@ -40,10 +40,10 @@ public class RedditApiScanner extends AbstractApi {
      * If a new post is found it will be then queried directly for its content and
      * comments
      */
-    @Override
-    public void execute() {
+    public void execute(String subreddit) {
         try {
-            String postsUrl = "https://www.reddit.com/r/wallstreetbets/new.json?limit=1000";
+            // temp to 1 so i don't spam db
+            String postsUrl = String.format("https://www.reddit.com/r/%s/new.json?limit=1000", subreddit);
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(postsUrl))
                     .header("User-Agent", redditConfig.getUserAgent())
@@ -63,7 +63,7 @@ public class RedditApiScanner extends AbstractApi {
         Arrays.stream(listingData.getChildren()).forEach(child -> {
             PostData postData = (PostData) child.getData();
             if (postCache.getIfPresent(postData.getId()) != null
-                    || postData.getNumComments() == postData.getNumComments()) {
+                    && postData.getNumComments() == postData.getNumComments()) {
                 return; // Post already processed
             }
 
@@ -132,10 +132,5 @@ public class RedditApiScanner extends AbstractApi {
         return Caffeine.newBuilder()
                 .expireAfterWrite(Duration.ofDays(1))
                 .build();
-    }
-
-    @Override
-    public String getName() {
-        return "Reddit WallStreetBets Scanner";
     }
 }
