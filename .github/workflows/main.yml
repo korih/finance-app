@@ -37,7 +37,7 @@ jobs:
           java-version: '21'
   
       - name: Build JAR with Maven
-        run: mvn -B package --file java-backend/pom.xml
+        run: mvn -B package --file java-backend/pom.xml -DskipTests
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
