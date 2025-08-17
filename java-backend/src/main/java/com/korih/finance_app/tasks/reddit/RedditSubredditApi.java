@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.korih.finance_app.config.RedditConfig;
 import com.korih.finance_app.models.ApiResponse;
 import com.korih.finance_app.models.reddit.RedditThing;
 import com.korih.finance_app.models.reddit.data.CommentData;
@@ -27,7 +26,6 @@ import com.korih.finance_app.services.WebClient;
 @Service
 @RequiredArgsConstructor
 public class RedditSubredditApi {
-    private final RedditConfig redditConfig;
     private final WebClient webClient;
     private final ObjectMapper objectMapper;
     private final PostDataRepository postDataRepository;
@@ -46,7 +44,7 @@ public class RedditSubredditApi {
             String postsUrl = String.format("https://www.reddit.com/r/%s/new.json?limit=1000", subreddit);
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(postsUrl))
-                    .header("User-Agent", redditConfig.getUserAgent())
+                    .header("User-Agent", "looker")
                     .GET()
                     .build();
             var response = webClient.request(request, RedditThing.class);
@@ -77,7 +75,7 @@ public class RedditSubredditApi {
             String postUrl = "https://www.reddit.com%s.json";
             HttpRequest postRequest = HttpRequest.newBuilder()
                     .uri(URI.create(String.format(postUrl, postData.getPermalink())))
-                    .header("User-Agent", redditConfig.getUserAgent())
+                    .header("User-Agent", "looker")
                     .GET()
                     .build();
             var postResponse = webClient.request(postRequest, JsonNode.class);
