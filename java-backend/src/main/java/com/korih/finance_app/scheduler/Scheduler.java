@@ -16,7 +16,7 @@ public class Scheduler {
   public void tenMinTasks() {
   }
 
-  @Scheduled(fixedDelay = 1080000) // 3 hours
+  @Scheduled(fixedDelay = 86400000) // 3 hours
   public void hourlyTasks() {
     redditApi.execute("wallstreetbets");
     redditApi.execute("daytrading");
