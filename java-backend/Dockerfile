@@ -2,7 +2,7 @@ FROM eclipse-temurin:21-jdk-alpine
 
 WORKDIR /app
 
-COPY target/finance-processor-0.0.1-SNAPSHOT.jar app.jar
+COPY target/finance-app-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8080
 
